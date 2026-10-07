@@ -4018,3 +4018,21 @@ schedule.json watch items pruned (19.7KB).
 - **P2 (runner quota split): still PROPOSED, low urgency.** The operator
   quota file has been idle since 10-05, and the overspend has not
   recurred.
+
+## 2026-10-07 16:3xZ - gamma-api.polymarket.com denied by this session's egress policy (hourly)
+
+- **Symptom:** on the first FULL cycle after the operator reset (dafeb8f),
+  all 4 discovery queries failed with `Tunnel connection failed: 403
+  Forbidden` from the agent proxy. scan returned 0 candidates and screen
+  prepare had nothing to screen. The 14:29Z cycle on the previous runner
+  reached gamma normally, so the block belongs to this session's
+  environment, not to discovery.py. The same session also refused the
+  lease ref push (`remote end hung up`).
+- **Not worked around:** the proxy docs treat a 403 as an organization
+  policy denial and say not to retry or route around it. No scan, research
+  or bets ran this cycle.
+- **Operator ask:** add gamma-api.polymarket.com and clob.polymarket.com
+  (core/ledger.py fills and core/resolve.py need both) to the egress
+  allowlist of the environment that runs this session. The 2026-07-30
+  22:12Z abort in the archived cycles.log had the same cause.
+- **Status:** PROPOSED.
